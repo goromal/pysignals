@@ -37,10 +37,9 @@ namespace py = pybind11;
     .def("update", static_cast<bool (BST::*)(const std::vector<double>&, const std::vector<BST::BaseType>&, const std::vector<BST::TangentType>&)>(&BST::update), "Update signal and derivative values", py::arg("tHistory"), py::arg("xHistory"), py::arg("xdotHistory"));\
 }
 
-#define _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, BSS, TSS) {\
-    intObj\
-    .def("__call__", static_cast<bool (IT::*)(Signal<BSS, TSS>&, const Signal<TSS, TSS>&, const double&, const bool&)>(&IT::operator()), "Integrate over the whole interval up to t", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("insertIntoHistory") = false)\
-    .def("__call__", static_cast<bool (IT::*)(Signal<BSS, TSS>&, const Signal<TSS, TSS>&, const double&, const double&, const bool&)>(&IT::operator()), "Integrate over the whole interval up to t in increments of dt", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("dt"), py::arg("insertIntoHistory") = false);\
+#define _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, BSS, TSS) {\
+    m.def(FuncName, static_cast<bool (*)(Signal<BSS, TSS>&, const Signal<TSS, TSS>&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("insertIntoHistory") = false);\
+    m.def(FuncName, static_cast<bool (*)(Signal<BSS, TSS>&, const Signal<TSS, TSS>&, const double&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t in increments of dt", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("dt"), py::arg("insertIntoHistory") = false);\
 }
 
 #define SSS ScalarSignalSpec<double>
@@ -57,22 +56,20 @@ namespace py = pybind11;
 #define SO3S ManifoldSignalSpec<SO3d>
 #define SE3S ManifoldSignalSpec<SE3d>
 
-#define WRAP_INTEGRATOR_TYPE(IntegratorName, IT) {\
-    py::class_<IT> intObj(m, IntegratorName);\
-    intObj.def(py::init());\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, SSS, SSS);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V1S, V1S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V2S, V2S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V3S, V3S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V4S, V4S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V5S, V5S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V6S, V6S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V7S, V7S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V8S, V8S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V9S, V9S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, V10S, V10S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, SO3S, V3S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(IT, intObj, SE3S, V6S);\
+#define WRAP_INTEGRATOR_TYPE(FuncName, IT) {\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SSS, SSS);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V1S, V1S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V2S, V2S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V3S, V3S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V4S, V4S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V5S, V5S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V6S, V6S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V7S, V7S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V8S, V8S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V9S, V9S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V10S, V10S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SO3S, V3S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SE3S, V6S);\
 }
 
 PYBIND11_MODULE(pysignals, m)
@@ -110,6 +107,20 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_SIGNAL_TYPE("SO3Signal", SO3dSignal, Vector3dSignal);
   WRAP_SIGNAL_TYPE("SE3Signal", SE3dSignal, Vector6dSignal);
 
-  WRAP_INTEGRATOR_TYPE("IntegrateEuler", IntegrateEuler);
-  WRAP_INTEGRATOR_TYPE("IntegrateTrapezoidal", IntegrateTrapezoidal);
+  WRAP_SIGNAL_TYPE("ScalarStateSignal", ScalardStateSignal, ScalardStateSignal);
+  WRAP_SIGNAL_TYPE("Vector1StateSignal", Vector1dStateSignal, Vector1dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector2StateSignal", Vector2dStateSignal, Vector2dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector3StateSignal", Vector3dStateSignal, Vector3dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector4StateSignal", Vector4dStateSignal, Vector4dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector5StateSignal", Vector5dStateSignal, Vector5dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector6StateSignal", Vector6dStateSignal, Vector6dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector7StateSignal", Vector7dStateSignal, Vector7dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector8StateSignal", Vector8dStateSignal, Vector8dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector9StateSignal", Vector9dStateSignal, Vector9dStateSignal);
+  WRAP_SIGNAL_TYPE("Vector10StateSignal", Vector10dStateSignal, Vector10dStateSignal);
+  WRAP_SIGNAL_TYPE("SO3StateSignal", SO3dStateSignal, Vector3dStateSignal);
+  WRAP_SIGNAL_TYPE("SE3StateSignal", SE3dStateSignal, Vector6dStateSignal);
+
+  WRAP_INTEGRATOR_TYPE("integrateEuler", EulerIntegrator);
+  WRAP_INTEGRATOR_TYPE("integrateTrapezoidal", TrapezoidalIntegrator);
 }

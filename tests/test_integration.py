@@ -1,7 +1,6 @@
 import pytest
 import numpy as np
 from pysignals import *
-from geometry import SO3
 
 class Helpers:
     @staticmethod

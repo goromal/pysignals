@@ -131,6 +131,7 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_SIGNAL_TYPE("Vector8Signal", Vector8dSignal, Vector8dSignal);
   WRAP_SIGNAL_TYPE("Vector9Signal", Vector9dSignal, Vector9dSignal);
   WRAP_SIGNAL_TYPE("Vector10Signal", Vector10dSignal, Vector10dSignal);
+  WRAP_SIGNAL_TYPE("SO2Signal", SO2dSignal, Vector1dSignal);
   WRAP_SIGNAL_TYPE("SO3Signal", SO3dSignal, Vector3dSignal);
   WRAP_SIGNAL_TYPE("SE3Signal", SE3dSignal, Vector6dSignal);
 
@@ -145,6 +146,7 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_STATE_TYPE("Vector8State", Vector8dState, Vector8dState);
   WRAP_STATE_TYPE("Vector9State", Vector9dState, Vector9dState);
   WRAP_STATE_TYPE("Vector10State", Vector10dState, Vector10dState);
+  WRAP_STATE_TYPE("SO2State", SO2dState, Vector1dState);
   WRAP_STATE_TYPE("SO3State", SO3dState, Vector3dState);
   WRAP_STATE_TYPE("SE3State", SE3dState, Vector6dState);
 
@@ -159,6 +161,7 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_SIGNAL_TYPE("Vector8StateSignal", Vector8dStateSignal, Vector8dStateSignal);
   WRAP_SIGNAL_TYPE("Vector9StateSignal", Vector9dStateSignal, Vector9dStateSignal);
   WRAP_SIGNAL_TYPE("Vector10StateSignal", Vector10dStateSignal, Vector10dStateSignal);
+  WRAP_SIGNAL_TYPE("SO2StateSignal", SO2dStateSignal, Vector1dStateSignal);
   WRAP_SIGNAL_TYPE("SO3StateSignal", SO3dStateSignal, Vector3dStateSignal);
   WRAP_SIGNAL_TYPE("SE3StateSignal", SE3dStateSignal, Vector6dStateSignal);
 
@@ -168,6 +171,7 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_DYNAMICS_TYPE("Translational1DOFSystem", Translational1DOFSystemd, ScalardSignal);
   WRAP_DYNAMICS_TYPE("Translational2DOFSystem", Translational2DOFSystemd, Vector2dSignal);
   WRAP_DYNAMICS_TYPE("Translational3DOFSystem", Translational3DOFSystemd, Vector3dSignal);
+  WRAP_DYNAMICS_TYPE("Rotational1DOFSystem", Rotational1DOFSystemd, Vector1dSignal);
   WRAP_DYNAMICS_TYPE("Rotational3DOFSystem", Rotational3DOFSystemd, Vector3dSignal);
   WRAP_DYNAMICS_TYPE("RigidBody6DOFSystem", RigidBody6DOFSystemd, Vector6dSignal);
 }

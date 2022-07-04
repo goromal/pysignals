@@ -9,8 +9,8 @@ class Helpers:
         sys = sysType()
         sys2 = sysType()
         
-        prepFunc(sys)
-        prepFunc(sys2)
+        sys = prepFunc(sys)
+        sys2 = prepFunc(sys2)
         
         u = uType()
 
@@ -42,6 +42,7 @@ class TestDynamics:
         xd = 1
         def prepFunc(sys):
             sys.dynamics.g = 0
+            return sys
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose, xd)
             assert np.allclose(sys.x().twist, 0)
@@ -50,7 +51,7 @@ class TestDynamics:
     def test_so2_dynamics(self, helpers):
         xd = SO2.fromAngle(1.0)
         def prepFunc(sys):
-            pass
+            return sys
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
@@ -59,7 +60,7 @@ class TestDynamics:
     def test_so3_dynamics(self, helpers):
         xd = SO3.fromEuler(1.0, -2.0, 0.5)
         def prepFunc(sys):
-            pass
+            return sys
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
@@ -68,7 +69,7 @@ class TestDynamics:
     def test_se3_dynamics(self, helpers):
         xd = SE3.fromVecAndQuat(np.array([0.5, -3.0, 2.0]), SO3.fromEuler(1.0, -2.0, 0.5))
         def prepFunc(sys):
-            pass
+            return sys
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)

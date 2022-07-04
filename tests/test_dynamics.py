@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from pysignals import *
-from geometry import SO3, SE3
+from geometry import SO2, SO3, SE3
 
 class Helpers:
     @staticmethod

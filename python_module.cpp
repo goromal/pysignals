@@ -89,8 +89,9 @@ namespace py = pybind11;
     py::class_<DT>(m, DynamicsName)\
     .def_readwrite("x", &DT::x)\
     .def_readwrite("xdot", &DT::xdot)\
-    .def_readwrite("dynamics", &DT::dynamics)\
     .def(py::init())\
+    .def("setParams", &DT::setParams)\
+    .def("hasParams", &DT::hasParams)\ 
     .def("reset", &DT::reset)\
     .def("t", &DT::t)\
     .def("simulateEuler", static_cast<bool (DT::*)(const IST&, const double&, const bool&, const bool&)>(&DT::simulate<EulerIntegrator>), "Simulate over the whole interval up to t", py::arg("u"), py::arg("tf"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
@@ -168,6 +169,20 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_INTEGRATOR_TYPE("integrateEuler", EulerIntegrator);
   WRAP_INTEGRATOR_TYPE("integrateTrapezoidal", TrapezoidalIntegrator);
 
+  py::class_<RigidBodyParams1D>(m, "RigidBodyParams1D")
+    .def_readwrite("m", &RigidBodyParams1D::m)
+    .def_readwrite("g", &RigidBodyParams1D::g);
+    
+  py::class_<RigidBodyParams2D>(m, "RigidBodyParams2D")
+    .def_readwrite("m", &RigidBodyParams2D::m)
+    .def_readwrite("J", &RigidBodyParams2D::J)
+    .def_readwrite("g", &RigidBodyParams2D::g);
+
+  py::class_<RigidBodyParams3D>(m, "RigidBodyParams3D")
+    .def_readwrite("m", &RigidBodyParams3D::m)
+    .def_readwrite("J", &RigidBodyParams3D::J)
+    .def_readwrite("g", &RigidBodyParams3D::g); 
+  
   WRAP_DYNAMICS_TYPE("Translational1DOFSystem", Translational1DOFSystemd, ScalardSignal);
   WRAP_DYNAMICS_TYPE("Translational2DOFSystem", Translational2DOFSystemd, Vector2dSignal);
   WRAP_DYNAMICS_TYPE("Translational3DOFSystem", Translational3DOFSystemd, Vector3dSignal);

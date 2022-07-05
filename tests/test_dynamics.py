@@ -1,13 +1,17 @@
 import pytest
 import numpy as np
 from pysignals import *
-from geometry import SO3, SE3
+from geometry import SO2, SO3, SE3
 
 class Helpers:
     @staticmethod
-    def test_dynamics(uType, sysType, stateType, xd, checkFunc):
+    def test_dynamics(uType, sysType, stateType, xd, params, checkFunc):
         sys = sysType()
         sys2 = sysType()
+        
+        sys.setParams(params)
+        sys2.setParams(params)
+        
         u = uType()
 
         t = 0
@@ -36,21 +40,43 @@ def helpers():
 class TestDynamics:
     def test_trans_dynamics(self, helpers):
         xd = 1
+        params = RigidBodyParams1D()
+        params.m = 1.0
+        params.g = 0.0
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose, xd)
             assert np.allclose(sys.x().twist, 0)
-        helpers.test_dynamics(ScalarSignal, Translational1DOFSystem, ScalarState, xd, checkFunc)
+        helpers.test_dynamics(ScalarSignal, Translational1DOFSystem, ScalarState, xd, params, checkFunc)
+
+    def test_so2_dynamics(self, helpers):
+        xd = SO2.fromAngle(1.0)
+        params = RigidBodyParams2D()
+        params.m = 1.0
+        params.J = 1.0
+        params.g = np.zeros(2)
+        def checkFunc(sys, xd):
+            assert np.allclose(sys.x().pose.array(), xd.array())
+            assert np.allclose(np.linalg.norm(sys.x().twist), 0)
+        helpers.test_dynamics(Vector1Signal, Rotational1DOFSystem, SO2State, xd, params, checkFunc) 
 
     def test_so3_dynamics(self, helpers):
         xd = SO3.fromEuler(1.0, -2.0, 0.5)
+        params = RigidBodyParams3D()
+        params.m = 1.0
+        params.J = np.eye(3)
+        params.g = np.zeros(3)
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
-        helpers.test_dynamics(Vector3Signal, Rotational3DOFSystem, SO3State, xd, checkFunc)
+        helpers.test_dynamics(Vector3Signal, Rotational3DOFSystem, SO3State, xd, params, checkFunc)
 
     def test_se3_dynamics(self, helpers):
         xd = SE3.fromVecAndQuat(np.array([0.5, -3.0, 2.0]), SO3.fromEuler(1.0, -2.0, 0.5))
+        params = RigidBodyParams3D()
+        params.m = 1.0
+        params.J = np.eye(3)
+        params.g = np.zeros(3)
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
-        helpers.test_dynamics(Vector6Signal, RigidBody6DOFSystem, SE3State, xd, checkFunc)
+        helpers.test_dynamics(Vector6Signal, RigidBody6DOFSystem, SE3State, xd, params, checkFunc)

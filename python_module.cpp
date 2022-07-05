@@ -89,8 +89,9 @@ namespace py = pybind11;
     py::class_<DT>(m, DynamicsName)\
     .def_readwrite("x", &DT::x)\
     .def_readwrite("xdot", &DT::xdot)\
-    .def_readwrite("dynamics", &DT::dynamics)\
     .def(py::init())\
+    .def("setParams", &DT::setParams)\
+    .def("hasParams", &DT::hasParams)\ 
     .def("reset", &DT::reset)\
     .def("t", &DT::t)\
     .def("simulateEuler", static_cast<bool (DT::*)(const IST&, const double&, const bool&, const bool&)>(&DT::simulate<EulerIntegrator>), "Simulate over the whole interval up to t", py::arg("u"), py::arg("tf"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
@@ -131,6 +132,7 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_SIGNAL_TYPE("Vector8Signal", Vector8dSignal, Vector8dSignal);
   WRAP_SIGNAL_TYPE("Vector9Signal", Vector9dSignal, Vector9dSignal);
   WRAP_SIGNAL_TYPE("Vector10Signal", Vector10dSignal, Vector10dSignal);
+  WRAP_SIGNAL_TYPE("SO2Signal", SO2dSignal, Vector1dSignal);
   WRAP_SIGNAL_TYPE("SO3Signal", SO3dSignal, Vector3dSignal);
   WRAP_SIGNAL_TYPE("SE3Signal", SE3dSignal, Vector6dSignal);
 
@@ -145,6 +147,7 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_STATE_TYPE("Vector8State", Vector8dState, Vector8dState);
   WRAP_STATE_TYPE("Vector9State", Vector9dState, Vector9dState);
   WRAP_STATE_TYPE("Vector10State", Vector10dState, Vector10dState);
+  WRAP_STATE_TYPE("SO2State", SO2dState, Vector1dState);
   WRAP_STATE_TYPE("SO3State", SO3dState, Vector3dState);
   WRAP_STATE_TYPE("SE3State", SE3dState, Vector6dState);
 
@@ -159,15 +162,34 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_SIGNAL_TYPE("Vector8StateSignal", Vector8dStateSignal, Vector8dStateSignal);
   WRAP_SIGNAL_TYPE("Vector9StateSignal", Vector9dStateSignal, Vector9dStateSignal);
   WRAP_SIGNAL_TYPE("Vector10StateSignal", Vector10dStateSignal, Vector10dStateSignal);
+  WRAP_SIGNAL_TYPE("SO2StateSignal", SO2dStateSignal, Vector1dStateSignal);
   WRAP_SIGNAL_TYPE("SO3StateSignal", SO3dStateSignal, Vector3dStateSignal);
   WRAP_SIGNAL_TYPE("SE3StateSignal", SE3dStateSignal, Vector6dStateSignal);
 
   WRAP_INTEGRATOR_TYPE("integrateEuler", EulerIntegrator);
   WRAP_INTEGRATOR_TYPE("integrateTrapezoidal", TrapezoidalIntegrator);
 
+  py::class_<RigidBodyParams1D>(m, "RigidBodyParams1D")
+    .def(py::init())
+    .def_readwrite("m", &RigidBodyParams1D::m)
+    .def_readwrite("g", &RigidBodyParams1D::g);
+    
+  py::class_<RigidBodyParams2D>(m, "RigidBodyParams2D")
+    .def(py::init())
+    .def_readwrite("m", &RigidBodyParams2D::m)
+    .def_readwrite("J", &RigidBodyParams2D::J)
+    .def_readwrite("g", &RigidBodyParams2D::g);
+
+  py::class_<RigidBodyParams3D>(m, "RigidBodyParams3D")
+    .def(py::init())
+    .def_readwrite("m", &RigidBodyParams3D::m)
+    .def_readwrite("J", &RigidBodyParams3D::J)
+    .def_readwrite("g", &RigidBodyParams3D::g); 
+  
   WRAP_DYNAMICS_TYPE("Translational1DOFSystem", Translational1DOFSystemd, ScalardSignal);
   WRAP_DYNAMICS_TYPE("Translational2DOFSystem", Translational2DOFSystemd, Vector2dSignal);
   WRAP_DYNAMICS_TYPE("Translational3DOFSystem", Translational3DOFSystemd, Vector3dSignal);
+  WRAP_DYNAMICS_TYPE("Rotational1DOFSystem", Rotational1DOFSystemd, Vector1dSignal);
   WRAP_DYNAMICS_TYPE("Rotational3DOFSystem", Rotational3DOFSystemd, Vector3dSignal);
   WRAP_DYNAMICS_TYPE("RigidBody6DOFSystem", RigidBody6DOFSystemd, Vector6dSignal);
 }

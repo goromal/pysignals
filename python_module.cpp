@@ -170,15 +170,18 @@ PYBIND11_MODULE(pysignals, m)
   WRAP_INTEGRATOR_TYPE("integrateTrapezoidal", TrapezoidalIntegrator);
 
   py::class_<RigidBodyParams1D>(m, "RigidBodyParams1D")
+    .def(py::init())
     .def_readwrite("m", &RigidBodyParams1D::m)
     .def_readwrite("g", &RigidBodyParams1D::g);
     
   py::class_<RigidBodyParams2D>(m, "RigidBodyParams2D")
+    .def(py::init())
     .def_readwrite("m", &RigidBodyParams2D::m)
     .def_readwrite("J", &RigidBodyParams2D::J)
     .def_readwrite("g", &RigidBodyParams2D::g);
 
   py::class_<RigidBodyParams3D>(m, "RigidBodyParams3D")
+    .def(py::init())
     .def_readwrite("m", &RigidBodyParams3D::m)
     .def_readwrite("J", &RigidBodyParams3D::J)
     .def_readwrite("g", &RigidBodyParams3D::g); 

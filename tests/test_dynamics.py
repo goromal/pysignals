@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from pysignals import *
-from geometry import SO2, SO3, SE3
+from geometry import SO2, SO3, SE2, SE3
 
 class Helpers:
     @staticmethod
@@ -69,6 +69,17 @@ class TestDynamics:
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
         helpers.test_dynamics(Vector3Signal, Rotational3DOFSystem, SO3State, xd, params, checkFunc)
+
+    def test_se2_dynamics(self, helpers):
+        xd = SE2.fromVecAndRot(np.array([0.5, -3.0]), SO2.fromAngle(1.0))
+        params = RigidBodyParams2D()
+        params.m = 1.0
+        params.J = 1.0
+        params.g = np.zeros(2)
+        def checkFunc(sys, xd):
+            assert np.allclose(sys.x().pose.array(), xd.array())
+            assert np.allclose(np.linalg.norm(sys.x().twist), 0)
+        helpers.test_dynamics(Vector3Signal, RigidBody3DOFSystem, SE2State, xd, params, checkFunc)
 
     def test_se3_dynamics(self, helpers):
         xd = SE3.fromVecAndQuat(np.array([0.5, -3.0, 2.0]), SO3.fromEuler(1.0, -2.0, 0.5))

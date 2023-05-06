@@ -1,5 +1,7 @@
 # pysignals
 
+![example workflow](https://github.com/goromal/pysignals/actions/workflows/test.yml/badge.svg)
+
 Python bindings for the [signals-cpp](https://github.com/goromal/signals-cpp) library.
 
 **Under construction**

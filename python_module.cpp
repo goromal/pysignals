@@ -189,11 +189,11 @@ PYBIND11_MODULE(pysignals, m)
     .def_readwrite("J", &RigidBodyParams3D::J)
     .def_readwrite("g", &RigidBodyParams3D::g); 
   
-  WRAP_DYNAMICS_TYPE("Translational1DOFSystem", Translational1DOFSystemd, ScalardSignal);
-  WRAP_DYNAMICS_TYPE("Translational2DOFSystem", Translational2DOFSystemd, Vector2dSignal);
-  WRAP_DYNAMICS_TYPE("Translational3DOFSystem", Translational3DOFSystemd, Vector3dSignal);
-  WRAP_DYNAMICS_TYPE("Rotational1DOFSystem", Rotational1DOFSystemd, Vector1dSignal);
-  WRAP_DYNAMICS_TYPE("Rotational3DOFSystem", Rotational3DOFSystemd, Vector3dSignal);
-  WRAP_DYNAMICS_TYPE("RigidBody3DOFSystem", RigidBody3DOFSystemd, Vector3dSignal);
-  WRAP_DYNAMICS_TYPE("RigidBody6DOFSystem", RigidBody6DOFSystemd, Vector6dSignal);
+  WRAP_DYNAMICS_TYPE("Translational1DOFModel", Translational1DOFModeld, ScalardSignal);
+  WRAP_DYNAMICS_TYPE("Translational2DOFModel", Translational2DOFModeld, Vector2dSignal);
+  WRAP_DYNAMICS_TYPE("Translational3DOFModel", Translational3DOFModeld, Vector3dSignal);
+  WRAP_DYNAMICS_TYPE("Rotational1DOFModel", Rotational1DOFModeld, Vector1dSignal);
+  WRAP_DYNAMICS_TYPE("Rotational3DOFModel", Rotational3DOFModeld, Vector3dSignal);
+  WRAP_DYNAMICS_TYPE("RigidBody3DOFModel", RigidBody3DOFModeld, Vector3dSignal);
+  WRAP_DYNAMICS_TYPE("RigidBody6DOFModel", RigidBody6DOFModeld, Vector6dSignal);
 }

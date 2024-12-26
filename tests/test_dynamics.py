@@ -46,7 +46,7 @@ class TestDynamics:
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose, xd)
             assert np.allclose(sys.x().twist, 0)
-        helpers.test_dynamics(ScalarSignal, Translational1DOFSystem, ScalarState, xd, params, checkFunc)
+        helpers.test_dynamics(ScalarSignal, Translational1DOFModel, ScalarState, xd, params, checkFunc)
 
     def test_so2_dynamics(self, helpers):
         xd = SO2.fromAngle(1.0)
@@ -57,7 +57,7 @@ class TestDynamics:
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
-        helpers.test_dynamics(Vector1Signal, Rotational1DOFSystem, SO2State, xd, params, checkFunc) 
+        helpers.test_dynamics(Vector1Signal, Rotational1DOFModel, SO2State, xd, params, checkFunc) 
 
     def test_so3_dynamics(self, helpers):
         xd = SO3.fromEuler(1.0, -2.0, 0.5)
@@ -68,7 +68,7 @@ class TestDynamics:
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
-        helpers.test_dynamics(Vector3Signal, Rotational3DOFSystem, SO3State, xd, params, checkFunc)
+        helpers.test_dynamics(Vector3Signal, Rotational3DOFModel, SO3State, xd, params, checkFunc)
 
     def test_se2_dynamics(self, helpers):
         xd = SE2.fromVecAndRot(np.array([0.5, -3.0]), SO2.fromAngle(1.0))
@@ -79,7 +79,7 @@ class TestDynamics:
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
-        helpers.test_dynamics(Vector3Signal, RigidBody3DOFSystem, SE2State, xd, params, checkFunc)
+        helpers.test_dynamics(Vector3Signal, RigidBody3DOFModel, SE2State, xd, params, checkFunc)
 
     def test_se3_dynamics(self, helpers):
         xd = SE3.fromVecAndQuat(np.array([0.5, -3.0, 2.0]), SO3.fromEuler(1.0, -2.0, 0.5))
@@ -90,4 +90,4 @@ class TestDynamics:
         def checkFunc(sys, xd):
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
-        helpers.test_dynamics(Vector6Signal, RigidBody6DOFSystem, SE3State, xd, params, checkFunc)
+        helpers.test_dynamics(Vector6Signal, RigidBody6DOFModel, SE3State, xd, params, checkFunc)

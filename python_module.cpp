@@ -13,6 +13,10 @@ namespace py = pybind11;
     .def_readwrite("interpolationMethod", &BST::interpolationMethod)\
     .def_readwrite("extrapolationMethod", &BST::extrapolationMethod)\
     .def_readwrite("derivativeMethod", &BST::derivativeMethod)\
+    .def_static("baseZero", &BST::baseZero)\
+    .def_static("tangentZero", &BST::tangentZero)\
+    .def_static("baseNorm", &BST::baseNorm)\
+    .def_static("tangentNorm", &BST::tangentNorm)\
     .def(py::init())\
     .def(py::init<const BST &>())\
     .def("dotSignal", &BST::dotSignal)\
@@ -51,8 +55,8 @@ namespace py = pybind11;
 }
 
 #define _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, BSS, TSS) {\
-    m.def(FuncName, static_cast<bool (*)(Signal<BSS, TSS>&, const Signal<TSS, TSS>&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("insertIntoHistory") = false);\
-    m.def(FuncName, static_cast<bool (*)(Signal<BSS, TSS>&, const Signal<TSS, TSS>&, const double&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t in increments of dt", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("dt"), py::arg("insertIntoHistory") = false);\
+    m.def(FuncName, static_cast<bool (*)(Signal<double, BSS, TSS>&, const Signal<double, TSS, TSS>&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("insertIntoHistory") = false);\
+    m.def(FuncName, static_cast<bool (*)(Signal<double, BSS, TSS>&, const Signal<double, TSS, TSS>&, const double&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t in increments of dt", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("dt"), py::arg("insertIntoHistory") = false);\
 }
 
 #define SSS ScalarSignalSpec<double>

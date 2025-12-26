@@ -63,6 +63,13 @@ class TestSignal:
 
         assert np.allclose(q(0.5).array(), q_half.array())
         assert np.allclose(q(-0.5).array(), q_iden.array())
+    
+    def test_norms(self):
+        q = SO3.identity()
+        v = np.array([3., 4., 0.])
+        
+        assert abs(SO3Signal.baseNorm(q)) < 1e-8
+        assert abs(SO3Signal.tangentNorm(v) - 5.0) < 1e-8
 
     def test_set_equality(self):
         v1 = ScalarSignal()

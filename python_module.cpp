@@ -70,8 +70,8 @@ namespace py = pybind11;
 #define V8S VectorSignalSpec<double, 8>
 #define V9S VectorSignalSpec<double, 9>
 #define V10S VectorSignalSpec<double, 10>
-#define SO3S ManifoldSignalSpec<SO3d>
-#define SE3S ManifoldSignalSpec<SE3d>
+#define SO3S ManifoldSignalSpec<double, SO3d>
+#define SE3S ManifoldSignalSpec<double, SE3d>
 
 #define WRAP_INTEGRATOR_TYPE(FuncName, IT) {\
     _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SSS, SSS);\

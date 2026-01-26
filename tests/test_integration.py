@@ -30,3 +30,6 @@ class TestIntegration:
 
     def test_trapezoidal_integrator(self, helpers):
         helpers.test_integrator(integrateTrapezoidal)
+
+    def test_simpson_integrator(self, helpers):
+        helpers.test_integrator(integrateSimpson)

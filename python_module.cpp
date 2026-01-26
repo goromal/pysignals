@@ -38,7 +38,11 @@ namespace py = pybind11;
     .def("update", static_cast<bool (BST::*)(const double&, const BST::BaseType&, bool)>(&BST::update), "Update signal value", py::arg("t"), py::arg("x"), py::arg("insertHistory") = false)\
     .def("update", static_cast<bool (BST::*)(const double&, const BST::BaseType&, const BST::TangentType&, bool)>(&BST::update), "Update signal and derivative value", py::arg("t"), py::arg("x"), py::arg("xdot"), py::arg("insertHistory") = false)\
     .def("update", static_cast<bool (BST::*)(const std::vector<double>&, const std::vector<BST::BaseType>&)>(&BST::update), "Update signal values", py::arg("tHistory"), py::arg("xHistory"))\
-    .def("update", static_cast<bool (BST::*)(const std::vector<double>&, const std::vector<BST::BaseType>&, const std::vector<BST::TangentType>&)>(&BST::update), "Update signal and derivative values", py::arg("tHistory"), py::arg("xHistory"), py::arg("xdotHistory"));\
+    .def("update", static_cast<bool (BST::*)(const std::vector<double>&, const std::vector<BST::BaseType>&, const std::vector<BST::TangentType>&)>(&BST::update), "Update signal and derivative values", py::arg("tHistory"), py::arg("xHistory"), py::arg("xdotHistory"))\
+    .def_static("baseZero", &BST::baseZero, "Get zero value for base type")\
+    .def_static("tangentZero", &BST::tangentZero, "Get zero value for tangent type")\
+    .def_static("baseNorm", &BST::baseNorm, "Compute norm of base type", py::arg("x"))\
+    .def_static("tangentNorm", &BST::tangentNorm, "Compute norm of tangent type", py::arg("x"));\
 }
 
 #define WRAP_STATE_TYPE(StateName, BST, TST) {\
@@ -54,9 +58,9 @@ namespace py = pybind11;
     .def(py::self * float());\
 }
 
-#define _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, BSS, TSS) {\
-    m.def(FuncName, static_cast<bool (*)(Signal<double, BSS, TSS>&, const Signal<double, TSS, TSS>&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("insertIntoHistory") = false);\
-    m.def(FuncName, static_cast<bool (*)(Signal<double, BSS, TSS>&, const Signal<double, TSS, TSS>&, const double&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t in increments of dt", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("dt"), py::arg("insertIntoHistory") = false);\
+#define _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, T, BSS, TSS) {\
+    m.def(FuncName, static_cast<bool (*)(Signal<T, BSS, TSS>&, const Signal<T, TSS, TSS>&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("insertIntoHistory") = false);\
+    m.def(FuncName, static_cast<bool (*)(Signal<T, BSS, TSS>&, const Signal<T, TSS, TSS>&, const double&, const double&, const bool&)>(&IT::integrate), "Integrate over the whole interval up to t in increments of dt", py::arg("xInt"), py::arg("x"), py::arg("t"), py::arg("dt"), py::arg("insertIntoHistory") = false);\
 }
 
 #define SSS ScalarSignalSpec<double>
@@ -74,19 +78,19 @@ namespace py = pybind11;
 #define SE3S ManifoldSignalSpec<double, SE3d>
 
 #define WRAP_INTEGRATOR_TYPE(FuncName, IT) {\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SSS, SSS);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V1S, V1S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V2S, V2S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V3S, V3S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V4S, V4S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V5S, V5S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V6S, V6S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V7S, V7S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V8S, V8S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V9S, V9S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, V10S, V10S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SO3S, V3S);\
-    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, SE3S, V6S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, SSS, SSS);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V1S, V1S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V2S, V2S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V3S, V3S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V4S, V4S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V5S, V5S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V6S, V6S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V7S, V7S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V8S, V8S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V9S, V9S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, V10S, V10S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, SO3S, V3S);\
+    _WRAP_INTEGRATOR_FOR_SPECS(FuncName, IT, double, SE3S, V6S);\
 }
 
 #define WRAP_DYNAMICS_TYPE(DynamicsName, DT, IST) {\
@@ -101,7 +105,9 @@ namespace py = pybind11;
     .def("simulateEuler", static_cast<bool (DT::*)(const IST&, const double&, const bool&, const bool&)>(&DT::simulate<EulerIntegrator>), "Simulate over the whole interval up to t", py::arg("u"), py::arg("tf"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
     .def("simulateEuler", static_cast<bool (DT::*)(const IST&, const double&, const double&, const bool&, const bool&)>(&DT::simulate<EulerIntegrator>), "Simulate over the whole interval up to t in increments of dt", py::arg("u"), py::arg("tf"), py::arg("dt"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
     .def("simulateTrapezoidal", static_cast<bool (DT::*)(const IST&, const double&, const bool&, const bool&)>(&DT::simulate<TrapezoidalIntegrator>), "Simulate over the whole interval up to t", py::arg("u"), py::arg("tf"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
-    .def("simulateTrapezoidal", static_cast<bool (DT::*)(const IST&, const double&, const double&, const bool&, const bool&)>(&DT::simulate<TrapezoidalIntegrator>), "Simulate over the whole interval up to t in increments of dt", py::arg("u"), py::arg("tf"), py::arg("dt"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false);\
+    .def("simulateTrapezoidal", static_cast<bool (DT::*)(const IST&, const double&, const double&, const bool&, const bool&)>(&DT::simulate<TrapezoidalIntegrator>), "Simulate over the whole interval up to t in increments of dt", py::arg("u"), py::arg("tf"), py::arg("dt"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
+    .def("simulateSimpson", static_cast<bool (DT::*)(const IST&, const double&, const bool&, const bool&)>(&DT::simulate<SimpsonIntegrator>), "Simulate over the whole interval up to t", py::arg("u"), py::arg("tf"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false)\
+    .def("simulateSimpson", static_cast<bool (DT::*)(const IST&, const double&, const double&, const bool&, const bool&)>(&DT::simulate<SimpsonIntegrator>), "Simulate over the whole interval up to t in increments of dt", py::arg("u"), py::arg("tf"), py::arg("dt"), py::arg("insertIntoHistory") = false, py::arg("calculateXddot") = false);\
 }
 
 PYBIND11_MODULE(pysignals, m)
@@ -175,6 +181,7 @@ PYBIND11_MODULE(pysignals, m)
 
   WRAP_INTEGRATOR_TYPE("integrateEuler", EulerIntegrator);
   WRAP_INTEGRATOR_TYPE("integrateTrapezoidal", TrapezoidalIntegrator);
+  WRAP_INTEGRATOR_TYPE("integrateSimpson", SimpsonIntegrator);
 
   py::class_<RigidBodyParams1D>(m, "RigidBodyParams1D")
     .def(py::init())

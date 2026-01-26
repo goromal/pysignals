@@ -112,3 +112,36 @@ class TestSignal:
         q_est = u(t_test)
         q_tru = SO3.fromEuler(0.1, -0.1, 0.) + (2. * SO3.fromEuler(0.2, -0.3, 0.) - SO3.fromEuler(-0.1, 0.24, 0.1))
         assert np.allclose(q_est.array(), q_tru.array())
+
+    def test_static_methods(self):
+        # Test ScalarSignal static methods
+        scalar_zero = ScalarSignal.baseZero()
+        assert scalar_zero == 0.0
+        assert ScalarSignal.tangentZero() == 0.0
+        # Note: baseNorm for scalars returns the value itself, not absolute value
+        assert ScalarSignal.baseNorm(3.0) == 3.0
+        assert ScalarSignal.tangentNorm(4.0) == 4.0
+
+        # Test Vector3Signal static methods
+        vec_zero = Vector3Signal.baseZero()
+        assert np.allclose(vec_zero, np.zeros(3))
+        assert np.allclose(Vector3Signal.tangentZero(), np.zeros(3))
+
+        test_vec = np.array([3.0, 4.0, 0.0])
+        assert np.isclose(Vector3Signal.baseNorm(test_vec), 5.0)
+        assert np.isclose(Vector3Signal.tangentNorm(test_vec), 5.0)
+
+        # Test SO3Signal static methods
+        so3_zero = SO3Signal.baseZero()
+        assert np.allclose(so3_zero.array(), SO3.identity().array())
+
+        tangent_zero = SO3Signal.tangentZero()
+        assert np.allclose(tangent_zero, np.zeros(3))
+
+        test_quat = SO3.fromEuler(0.1, 0.2, 0.3)
+        norm = SO3Signal.baseNorm(test_quat)
+        assert norm >= 0.0  # Norm should be non-negative
+
+        test_tangent = np.array([0.1, 0.2, 0.3])
+        tangent_norm = SO3Signal.tangentNorm(test_tangent)
+        assert np.isclose(tangent_norm, np.linalg.norm(test_tangent))

@@ -13,6 +13,10 @@ namespace py = pybind11;
     .def_readwrite("interpolationMethod", &BST::interpolationMethod)\
     .def_readwrite("extrapolationMethod", &BST::extrapolationMethod)\
     .def_readwrite("derivativeMethod", &BST::derivativeMethod)\
+    .def_static("baseZero", &BST::baseZero)\
+    .def_static("tangentZero", &BST::tangentZero)\
+    .def_static("baseNorm", &BST::baseNorm)\
+    .def_static("tangentNorm", &BST::tangentNorm)\
     .def(py::init())\
     .def(py::init<const BST &>())\
     .def("dotSignal", &BST::dotSignal)\

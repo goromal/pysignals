@@ -94,6 +94,7 @@ class TestDynamics:
 
     def test_simpson_simulation(self):
         # Test that Simpson integrator works with dynamics models
+        # Uses same parameters as C++ TestTransSim test
         xd = 1
         params = RigidBodyParams1D()
         params.m = 1.0
@@ -111,12 +112,14 @@ class TestDynamics:
         assert sys.x.update(t, ScalarState.identity())
 
         dt = 0.01
-        num_iters = 1000
+        num_iters = 10000  # Same as C++ test
 
         for _ in range(num_iters):
             assert u.update(t, kp * (xd - sys.x().pose) - kd * sys.x().twist, True)
             t += dt
             assert sys.simulateSimpson(u, t)
 
-        assert np.allclose(sys.x().pose, xd, atol=0.1)
-        assert np.allclose(sys.x().twist, 0, atol=0.1)
+        # Simpson integrator has slightly different convergence behavior
+        # Use slightly more lenient tolerance than Euler (2% vs 1%)
+        assert np.allclose(sys.x().pose, xd, rtol=0.02)
+        assert abs(sys.x().twist) < 0.01  # Velocity should be near zero

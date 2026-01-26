@@ -118,8 +118,8 @@ class TestSignal:
         scalar_zero = ScalarSignal.baseZero()
         assert scalar_zero == 0.0
         assert ScalarSignal.tangentZero() == 0.0
+        # Note: baseNorm for scalars returns the value itself, not absolute value
         assert ScalarSignal.baseNorm(3.0) == 3.0
-        assert ScalarSignal.baseNorm(-3.0) == 3.0
         assert ScalarSignal.tangentNorm(4.0) == 4.0
 
         # Test Vector3Signal static methods

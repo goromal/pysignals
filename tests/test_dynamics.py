@@ -91,3 +91,32 @@ class TestDynamics:
             assert np.allclose(sys.x().pose.array(), xd.array())
             assert np.allclose(np.linalg.norm(sys.x().twist), 0)
         helpers.test_dynamics(Vector6Signal, RigidBody6DOFModel, SE3State, xd, params, checkFunc)
+
+    def test_simpson_simulation(self):
+        # Test that Simpson integrator works with dynamics models
+        xd = 1
+        params = RigidBodyParams1D()
+        params.m = 1.0
+        params.g = 0.0
+
+        sys = Translational1DOFModel()
+        sys.setParams(params)
+
+        u = ScalarSignal()
+
+        t = 0
+        kp = 1
+        kd = 0.5
+
+        assert sys.x.update(t, ScalarState.identity())
+
+        dt = 0.01
+        num_iters = 1000
+
+        for _ in range(num_iters):
+            assert u.update(t, kp * (xd - sys.x().pose) - kd * sys.x().twist, True)
+            t += dt
+            assert sys.simulateSimpson(u, t)
+
+        assert np.allclose(sys.x().pose, xd, atol=0.1)
+        assert np.allclose(sys.x().twist, 0, atol=0.1)
